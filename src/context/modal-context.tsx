@@ -68,6 +68,7 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
         <PopupDialog
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
+          onClose={closeModal}
           paperProps={paperProps}
           timerId={timer}
         />

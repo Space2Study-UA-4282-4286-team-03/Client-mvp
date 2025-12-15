@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { useModalContext } from '~/context/modal-context'
 import { useTranslation } from 'react-i18next'
 import imgReject from '~/assets/img/email-confirmation-modals/not-success-icon.svg'
+import imgSuccess from '~/assets/img/email-confirmation-modals/success-icon.svg'
 import LoginDialog from '~/containers/guest-home-page/login-dialog/LoginDialog'
 import useAxios from '~/hooks/use-axios'
 import { AuthService } from '~/services/auth-service'
@@ -15,27 +16,43 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
 
-  const serviceFunction = useCallback(
-    () => AuthService.confirmEmail(confirmToken),
-    [confirmToken]
-  )
-
   const { response, error, loading } = useAxios({
-    service: serviceFunction,
+    service: useCallback(
+      () => AuthService.confirmEmail(confirmToken),
+      [confirmToken]
+    ),
     defaultResponse: null
   })
 
   const openLoginDialog = () => {
+    closeModal()
     openModal({ component: <LoginDialog /> })
   }
 
-  if (loading) {
-    return <Loader size={100} />
+  if (loading) return <Loader size={100} />
+
+  if (response && !error) {
+    return (
+      <Box sx={styles.box}>
+        <ImgTitleDescription
+          img={imgSuccess}
+          style={styles}
+          title={t('modals.emailConfirm')}
+        />
+        <Button
+          onClick={openLoginDialog}
+          sx={styles.button}
+          variant='contained'
+        >
+          {t('button.goToLogin')}
+        </Button>
+      </Box>
+    )
   }
 
   if (
-    (error && error.code === 'BAD_CONFIRM_TOKEN') ||
-    (error && error.code === 'DOCUMENT_NOT_FOUND' && response === null)
+    error?.code === 'BAD_CONFIRM_TOKEN' ||
+    (error?.code === 'DOCUMENT_NOT_FOUND' && !response)
   ) {
     return (
       <Box sx={styles.box}>
@@ -52,7 +69,7 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
     )
   }
 
-  if (error && error.code === 'EMAIL_ALREADY_CONFIRMED') {
+  if (error?.code === 'EMAIL_ALREADY_CONFIRMED') {
     return (
       <Box sx={styles.box}>
         <ImgTitleDescription
@@ -71,6 +88,8 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
       </Box>
     )
   }
+
+  return null
 }
 
 export default EmailConfirmModal
