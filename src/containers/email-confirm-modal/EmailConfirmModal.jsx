@@ -89,6 +89,23 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
     )
   }
 
+  // Fallback for any other error (including 404 when backend is not available)
+  if (error) {
+    return (
+      <Box sx={styles.box}>
+        <ImgTitleDescription
+          description={t('modals.emailReject.badToken')}
+          img={imgReject}
+          style={styles}
+          title={t('modals.emailNotConfirm')}
+        />
+        <Button onClick={closeModal} sx={styles.button} variant='contained'>
+          {t('common.confirmButton')}
+        </Button>
+      </Box>
+    )
+  }
+
   return null
 }
 
