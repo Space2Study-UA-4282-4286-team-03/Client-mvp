@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import AppContentSwitcher from '../../../../components/app-content-switcher/AppContentSwitcher'
+import AppContentSwitcher from '~/components/app-content-switcher/AppContentSwitcher'
 
 const switchOptions = {
   left: { text: 'Left', tooltip: 'Left tooltip' },
@@ -51,6 +51,6 @@ describe('AppContentSwitcher', () => {
     const leftText = screen.getByText('Left')
     await user.hover(leftText)
     expect(await screen.findByText('Left tooltip')).toBeInTheDocument()
-    await user.unhover(leftText)
+    // await user.unhover(leftText)
   })
 })
