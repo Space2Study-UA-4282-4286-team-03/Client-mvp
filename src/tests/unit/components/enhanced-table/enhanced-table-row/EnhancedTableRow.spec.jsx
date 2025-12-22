@@ -8,7 +8,7 @@ vi.mock('react-i18next', () => ({
 }))
 
 vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn()
+  useNavigate: () => vi.fn()
 }))
 
 const openMenuMock = vi.fn()
@@ -32,6 +32,8 @@ describe('EnhancedTableRow component', () => {
       _id: '123',
       name: 'TestName'
     }
+
+    vi.clearAllMocks()
 
     render(
       <table>
@@ -78,6 +80,9 @@ describe('EnhancedTableRow component', () => {
 
   it('call onAction function when clicking on the menu item', async () => {
     const user = userEvent.setup()
+
+    const menuIcon = screen.getByTestId('menu-icon')
+    await user.click(menuIcon)
 
     const actionButton = screen.getByText('Delete')
     await user.click(actionButton)
