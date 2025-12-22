@@ -51,6 +51,5 @@ describe('AppContentSwitcher', () => {
     const leftText = screen.getByText('Left')
     await user.hover(leftText)
     expect(await screen.findByText('Left tooltip')).toBeInTheDocument()
-    // await user.unhover(leftText)
   })
 })
