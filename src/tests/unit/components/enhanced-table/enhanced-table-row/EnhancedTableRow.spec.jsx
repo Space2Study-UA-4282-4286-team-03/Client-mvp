@@ -18,7 +18,15 @@ vi.mock('~/hooks/use-menu', () => ({
   default: () => ({
     openMenu: openMenuMock,
     closeMenu: closeMenuMock,
-    renderMenu: (items) => <div>{items}</div>
+    renderMenu: (items) => (
+      <div
+        data-testid='menu'
+        onKeyDown={(e) => e.key === 'Escape' && closeMenuMock()}
+        tabIndex={0}
+      >
+        {items}
+      </div>
+    )
   })
 }))
 
@@ -92,6 +100,12 @@ describe('EnhancedTableRow component', () => {
 
   it('close menu when "escape" is pressed', async () => {
     const user = userEvent.setup()
+    const menuIcon = screen.getByTestId('menu-icon')
+
+    await user.click(menuIcon)
+
+    const menu = screen.getByTestId('menu')
+    menu.focus()
 
     await user.keyboard('{Escape}')
 
