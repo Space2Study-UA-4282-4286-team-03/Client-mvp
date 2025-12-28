@@ -15,6 +15,7 @@ interface PopupDialogProps {
   timerId: NodeJS.Timeout | null
   closeModal: () => void
   closeModalAfterDelay: (delay?: number) => void
+  isDirty?: boolean
 }
 
 const PopupDialog: FC<PopupDialogProps> = ({
@@ -22,14 +23,19 @@ const PopupDialog: FC<PopupDialogProps> = ({
   paperProps,
   timerId,
   closeModal,
-  closeModalAfterDelay
+  closeModalAfterDelay,
+  isDirty
 }) => {
   const { isMobile } = useBreakpoints()
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const [isHaveUnsavedChanges, setIsHaveUnsavedChanges] = useState(false)
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
+
+  const handleCloseModal = () => {
+    setIsConfirmOpen(false)
+    closeModal()
+  }
 
   return (
     <>
@@ -43,12 +49,6 @@ const PopupDialog: FC<PopupDialogProps> = ({
       >
         <Box
           data-testid='popupContent'
-          onChangeCapture={(e) => {
-            const target = e.target as HTMLInputElement
-            if (target?.value !== '' || target?.checked === true) {
-              setIsHaveUnsavedChanges(true)
-            }
-          }}
           onMouseLeave={handleMouseLeave}
           onMouseOver={handleMouseOver}
           sx={styles.box}
@@ -56,10 +56,10 @@ const PopupDialog: FC<PopupDialogProps> = ({
           <IconButton
             data-testid='closeButton'
             onClick={() => {
-              if (isHaveUnsavedChanges) {
+              if (isDirty) {
                 setIsConfirmOpen(true)
               } else {
-                closeModal()
+                handleCloseModal()
               }
             }}
             sx={styles.icon}
@@ -72,8 +72,10 @@ const PopupDialog: FC<PopupDialogProps> = ({
 
       <ConfirmDialog
         message='questions.unsavedChanges'
-        onConfirm={closeModal}
-        onDismiss={() => setIsConfirmOpen(false)}
+        onConfirm={handleCloseModal}
+        onDismiss={() => {
+          setIsConfirmOpen(false)
+        }}
         open={isConfirmOpen}
         title='titles.confirmTitle'
       />
