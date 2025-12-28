@@ -61,7 +61,7 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
 
   const contextValue = useMemo(
     () => ({ openModal, closeModal, setIsDirty }),
-    [closeModal, openModal]
+    [closeModal, openModal, setIsDirty]
   )
 
   return (
