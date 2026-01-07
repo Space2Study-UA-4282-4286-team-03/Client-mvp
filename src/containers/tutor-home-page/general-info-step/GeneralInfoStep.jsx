@@ -157,6 +157,7 @@ const GeneralInfoStep = ({
           <Grid item sm={6} xs={12}>
             <AsyncAutocomplete
               data-testid='autocomplete-city'
+              disabled={!data.country}
               fetchCondition={Boolean(data.country)}
               getOptionLabel={(option) => option.name}
               key={data.country}
