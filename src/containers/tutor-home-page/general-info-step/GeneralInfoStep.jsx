@@ -91,7 +91,7 @@ const GeneralInfoStep = ({
   }
 
   const handleCountryChange = (_e, value) => {
-    const next = { ...data, country: value?.id || null, city: null }
+    const next = { ...data, country: value?.id ?? null, city: null }
     const nextErrors = validate(next)
     setData(next)
     setErrors(nextErrors)
@@ -143,31 +143,29 @@ const GeneralInfoStep = ({
           <Grid item sm={6} xs={12}>
             <AsyncAutocomplete
               data-testid='autocomplete-country'
+              fetchCondition
               getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(o, v) => o.id === v.id}
               onChange={handleCountryChange}
               service={fetchCountries}
               textFieldProps={{
-                label: t('common.labels.country'),
-                inputProps: { 'data-testid': 'autocomplete-country' }
+                label: t('common.labels.country')
               }}
-              value={data.country}
+              value={data.country ? String(data.country) : null}
               valueField='id'
             />
           </Grid>
           <Grid item sm={6} xs={12}>
             <AsyncAutocomplete
+              data-testid='autocomplete-city'
               fetchCondition={Boolean(data.country)}
               getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(o, v) => o.id === v.id}
               key={data.country}
               onChange={handleCityChange}
               service={fetchCities}
               textFieldProps={{
-                label: t('common.labels.city'),
-                inputProps: { 'data-testid': 'autocomplete-city' }
+                label: t('common.labels.city')
               }}
-              value={data.city}
+              value={data.city ? String(data.city) : null}
               valueField='id'
             />
           </Grid>
