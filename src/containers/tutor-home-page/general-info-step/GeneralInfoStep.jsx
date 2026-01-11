@@ -38,7 +38,7 @@ const GeneralInfoStep = ({
       city: data.city ?? null,
       professionalSummary: data.professionalSummary ?? ''
     }
-  }, [stepLabel])
+  }, [stepLabel, stepData])
 
   const [data, setData] = useState(initial)
   const [errors, setErrors] = useState({})
@@ -79,7 +79,15 @@ const GeneralInfoStep = ({
       handleStepData(stepLabel, pref, errs)
       setIsUserFetched && setIsUserFetched(true)
     }
-  }, [userResp, isUserFetched, stepLabel])
+  }, [
+    userResp,
+    isUserFetched,
+    stepLabel,
+    validate,
+    handleStepData,
+    setIsUserFetched,
+    data
+  ])
 
   const handleChange = (key) => (e) => {
     const value = e?.target ? e.target.value : e
