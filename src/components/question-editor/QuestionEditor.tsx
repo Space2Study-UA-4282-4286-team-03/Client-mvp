@@ -194,8 +194,12 @@ const QuestionEditor: FC<QuestionEditorProps> = ({
         </Box>
         {isQuizQuestion && (
           <>
-            <IconButton onClick={openMenu}>
-              <MoreVertIcon color='primary' sx={styles.moreIcon} />
+            <IconButton aria-label='open-more-menu' onClick={openMenu}>
+              <MoreVertIcon
+                color='primary'
+                data-testid='MoreVertIcon'
+                sx={styles.moreIcon}
+              />
             </IconButton>
             {showMoreMenu}
           </>
