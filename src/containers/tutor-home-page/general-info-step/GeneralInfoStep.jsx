@@ -85,8 +85,7 @@ const GeneralInfoStep = ({
     stepLabel,
     validate,
     handleStepData,
-    setIsUserFetched,
-    data
+    setIsUserFetched
   ])
 
   const handleChange = (key) => (e) => {
