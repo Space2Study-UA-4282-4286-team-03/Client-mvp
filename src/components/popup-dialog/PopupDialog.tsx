@@ -21,7 +21,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
   paperProps,
   timerId,
   closeModalAfterDelay,
-  onClose
+  onClose = () => {}
 }) => {
   const { isMobile } = useBreakpoints()
 
