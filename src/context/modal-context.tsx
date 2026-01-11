@@ -69,6 +69,7 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
           closeModal={closeModal}
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
+          onClose={closeModal}
           paperProps={paperProps}
           timerId={timer}
         />

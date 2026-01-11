@@ -54,8 +54,24 @@ const useAxios = <
       } catch (e) {
         const error = e as AxiosError<ErrorResponse>
         if (error.response) {
-          setError(error.response.data)
-          onResponseError && onResponseError(error.response.data)
+          // For 404 errors, use DOCUMENT_NOT_FOUND code if data is missing
+          const status = error.response.status
+          const errorData = error.response.data || {
+            code: status === 404 ? 'DOCUMENT_NOT_FOUND' : 'UNKNOWN_ERROR',
+            message: '',
+            status
+          }
+          setError(errorData)
+          onResponseError && onResponseError(errorData)
+        } else {
+          // Handle network errors or cases when response is not available (404, network error, etc.)
+          const fallbackError: ErrorResponse = {
+            code: 'DOCUMENT_NOT_FOUND',
+            message: '',
+            status: 404
+          }
+          setError(fallbackError)
+          onResponseError && onResponseError(fallbackError)
         }
       } finally {
         setLoading(false)
