@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -9,9 +8,9 @@ import Typography from '@mui/material/Typography'
 import useInputVisibility from '~/hooks/use-input-visibility'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
+import { useAppSelector } from '~/hooks/use-redux'
 
 import { styles } from '~/containers/guest-home-page/student-signup-form/StudentSignupForm.styles'
-import { RootState } from '~/redux/store'
 
 interface StudentSignupFormData {
   firstName: string
@@ -57,7 +56,7 @@ const StudentSignupForm: FC<StudentSignupFormProps> = ({
     showInputText: showConfirmPassword
   } = useInputVisibility(errors.confirmPassword)
 
-  const { authLoading } = useSelector((state: RootState) => state.appMain)
+  const { authLoading } = useAppSelector((state) => state.appMain)
   const { t } = useTranslation()
 
   return (
