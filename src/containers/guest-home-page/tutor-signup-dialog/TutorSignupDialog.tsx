@@ -89,6 +89,7 @@ const TutorSignupDialog = () => {
 
   useEffect(() => {
     setIsDirty(isDirty)
+    return () => setIsDirty(false)
   }, [isDirty, setIsDirty])
 
   return (

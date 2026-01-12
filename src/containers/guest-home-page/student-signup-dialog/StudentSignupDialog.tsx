@@ -89,6 +89,7 @@ const StudentSignupDialog = () => {
 
   useEffect(() => {
     setIsDirty(isDirty)
+    return () => setIsDirty(false)
   }, [isDirty, setIsDirty])
 
   return (
