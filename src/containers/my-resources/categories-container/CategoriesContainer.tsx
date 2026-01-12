@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import AddIcon from '@mui/icons-material/Add'
-
 import Loader from '~/components/loader/Loader'
 import AppButton from '~/components/app-button/AppButton'
 import AddCategoriesModal from '~/containers/my-resources/add-categories-modal/AddCategoriesModal'
@@ -81,7 +80,7 @@ const CategoriesContainer = () => {
       ResourceService.getResourcesCategories({
         limit: itemsPerPage,
         skip: (page - 1) * itemsPerPage,
-        sort,
+        sort: JSON.stringify(sort),
         name: searchTitle.current
       }),
     [page, itemsPerPage, sort, searchTitle]

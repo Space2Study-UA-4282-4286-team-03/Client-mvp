@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import InfoCard from '~/components/info-card/InfoCard'
 import TutorSignupDialog from '~/containers/guest-home-page/tutor-signup-dialog/TutorSignupDialog'
+import StudentSignupDialog from '~/containers/guest-home-page/student-signup-dialog/StudentSignupDialog'
 
 import { useModalContext } from '~/context/modal-context'
 import { guestRoutes } from '~/router/constants/guestRoutes'
@@ -23,8 +24,8 @@ const WhatCanYouDo = () => {
   }, [openModal])
 
   const openStudentSignup = useCallback(() => {
-    // TODO: Implement student signup dialog
-  }, [])
+    openModal({ component: <StudentSignupDialog /> })
+  }, [openModal])
 
   const cardData = [
     {
