@@ -18,6 +18,11 @@ export const URLs = {
     delete: '/users/delete',
     myProfile: '/users/myProfile'
   },
+  locations: {
+    countries: '/locations/countries',
+    citiesByCountry: (countryId: string | number) =>
+      `/locations/${countryId}/cities`
+  },
   categories: {
     get: '/categories',
     getNames: '/categories/names',

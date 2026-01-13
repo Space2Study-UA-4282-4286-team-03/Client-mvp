@@ -5,5 +5,9 @@
     "language": "Language",
     "subjects": "Subjects",
     "photo": "Photo"
+  },
+  "noteLabel": {
+    "InputsNote": "Inputs with the * sign are required",
+    "generalDescription": "Please complete the registration form for best possible experience"
   }
 }
