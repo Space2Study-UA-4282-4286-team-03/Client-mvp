@@ -122,13 +122,15 @@ const GeneralInfoStep = ({
 
   return (
     <Box sx={styles.container}>
-      <Box sx={styles.imgContainer}>
+      <Box gridArea='image' sx={styles.imgContainer}>
         <Box component='img' src={img} sx={styles.img} />
       </Box>
-      <Box sx={styles.contentBox}>
-        <Typography sx={{ mb: 3 }} variant='body1'>
+      <Box gridArea='title'>
+        <Typography sx={{ mb: 3, fontWeight: '500' }}>
           {t('step.noteLabel.generalDescription')}
         </Typography>
+      </Box>
+      <Box gridArea='form' sx={styles.contentBox}>
         <Grid container spacing={2} sx={{ width: '100%' }}>
           <Grid item sm={6} xs={12}>
             <AppTextField

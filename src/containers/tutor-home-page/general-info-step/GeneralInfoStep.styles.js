@@ -2,26 +2,36 @@ import { fadeAnimation } from '~/styles/app-theme/custom-animations'
 
 export const styles = {
   container: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'stretch',
-    height: { sm: '485px' },
-    paddingBottom: { xs: '30px', sm: '0' },
+    display: 'grid',
+    gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+    gridTemplateAreas: {
+      xs: `
+          "title"
+          "image"
+          "form"
+        `,
+      sm: `
+          "title"
+          "form"
+        `,
+      md: `
+          "image title"
+          "image form"
+        `
+    },
     ...fadeAnimation
   },
-  contentBox: {
-    width: { xs: '100%', md: '45%' }
-  },
   imgContainer: {
-    width: { xs: '0', md: '50%' },
-    height: { xs: '200px', sm: '485px' },
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    display: {
+      xs: 'block',
+      sm: 'none',
+      md: 'block'
+    }
   },
   img: {
-    width: { xs: '100%', sm: '100%' },
-    height: { sm: 'auto', md: '485px' },
-    objectFit: { sm: 'cover' }
+    display: 'block',
+    margin: '0 auto',
+    paddingBottom: '2rem',
+    maxWidth: '90%'
   }
 }
