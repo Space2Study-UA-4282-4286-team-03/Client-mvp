@@ -26,5 +26,44 @@ export const styles = {
     justifyContent: 'space-between',
     m: { md: 0, xs: '0 auto' },
     pt: 0
+  },
+  title: {
+    color: 'basic.blueGray'
+  },
+  select: {
+    borderColor: 'basic.blueGray',
+    color: 'basic.blueGray',
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'basic.blueGray'
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'primary.500'
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'primary.900'
+    },
+    '& .MuiSvgIcon-root': {
+      color: 'basic.blueGray'
+    }
+  },
+  menu: {
+    '& .MuiPaper-root': {
+      borderColor: 'basic.blueGray',
+      border: '1px solid',
+      borderRadius: '4px'
+    },
+    '& .MuiMenuItem-root': {
+      color: 'basic.blueGray',
+      '&:hover': {
+        backgroundColor: 'primary.50'
+      },
+      '&.Mui-selected': {
+        backgroundColor: 'primary.100',
+        color: 'primary.900',
+        '&:hover': {
+          backgroundColor: 'primary.100'
+        }
+      }
+    }
   }
 }
