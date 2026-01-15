@@ -98,6 +98,7 @@ const Categories = () => {
           createCategories={async (params) => {
             await ResourceService.createResourceCategory(params)
             await fetchData()
+            resetData()
           }}
         />
       )
