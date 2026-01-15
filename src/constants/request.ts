@@ -19,8 +19,8 @@ export const URLs = {
     myProfile: '/users/myProfile'
   },
   categories: {
-    get: '/categories',
-    getNames: '/categories/names',
+    get: '/resources-categories',
+    getNames: '/resources-categories/names',
     priceRange: '/price-range'
   },
   subjects: {
