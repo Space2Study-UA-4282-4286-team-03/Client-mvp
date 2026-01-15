@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +28,7 @@ interface SignupData {
 
 const StudentSignupDialog = () => {
   const { t } = useTranslation()
-  const { closeModal, openModal } = useModalContext()
+  const { closeModal, openModal, setIsDirty } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const [signUp] = useSignUpMutation()
 
@@ -55,7 +55,7 @@ const StudentSignupDialog = () => {
     [openModal, closeModal, t]
   )
 
-  const { handleSubmit, handleInputChange, handleBlur, data, errors } =
+  const { handleSubmit, handleInputChange, handleBlur, data, errors, isDirty } =
     useForm<SignupData>({
       onSubmit: async () => {
         try {
@@ -86,6 +86,11 @@ const StudentSignupDialog = () => {
         agreeToTerms: false
       }
     })
+
+  useEffect(() => {
+    setIsDirty(isDirty)
+    return () => setIsDirty(false)
+  }, [isDirty, setIsDirty])
 
   return (
     <Box sx={styles.root}>
