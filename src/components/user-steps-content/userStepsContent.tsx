@@ -24,13 +24,14 @@ const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
 
   const childrenArr: ReactElement[] = [
     <GeneralInfoStep
+      btnsBox
       isUserFetched={isUserFetched}
       key='1'
       setIsUserFetched={setIsUserFetched}
     />,
-    <SubjectsStep key='2' />,
-    <LanguageStep key='3' />,
-    <AddPhotoStep key='4' />
+    <SubjectsStep btnsBox key='2' />,
+    <LanguageStep btnsBox key='3' />,
+    <AddPhotoStep btnsBox key='4' />
   ]
 
   const stepLabels = userRole === student ? '' : tutorStepLabels

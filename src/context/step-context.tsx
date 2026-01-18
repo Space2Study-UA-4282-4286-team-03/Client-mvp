@@ -7,13 +7,25 @@ import {
 } from 'react'
 
 interface StepContextValue {
-  stepData: Record<string, unknown>
+  stepData: {
+    general: { data: GeneralInfoData; errors: Record<string, string> }
+    subjects: SubjectsData
+    language: LanguageData
+    photo: PhotoData
+  }
+  handleStepData: (
+    step: keyof StepContextValue['stepData'],
+    data: unknown,
+    errors?: Record<string, string>
+  ) => void
 }
 
 interface GeneralInfoData {
   firstName: string
   lastName: string
-  email: string
+  summaryProfessional?: string
+  country?: string
+  city?: string
 }
 
 interface SubjectsData {
@@ -25,23 +37,6 @@ interface LanguageData {
 }
 
 type PhotoData = File[]
-
-interface StepContextValue {
-  stepData: {
-    general: {
-      data: GeneralInfoData
-      errors: Record<string, string>
-    }
-    subjects: SubjectsData
-    language: LanguageData
-    photo: PhotoData
-  }
-  handleStepData: <T>(
-    stepLabel: string,
-    data: T,
-    errors?: Record<string, string>
-  ) => void
-}
 
 interface StepProviderProps {
   children: ReactNode
@@ -57,28 +52,28 @@ const StepProvider = ({
   stepLabels
 }: StepProviderProps) => {
   const [generalData, setGeneralData] = useState({
-    data: initialValues,
+    data: initialValues as GeneralInfoData,
     errors: {}
   })
-  const [subject, setSubject] = useState([])
-  const [language, setLanguage] = useState(null)
-  const [photo, setPhoto] = useState([])
+  const [subject, setSubject] = useState<SubjectsData>({ subjects: [] })
+  const [language, setLanguage] = useState<LanguageData>({ language: null })
+  const [photo, setPhoto] = useState<PhotoData>([])
   const [generalLabel, subjectLabel, languageLabel, photoLabel] = stepLabels
 
-  const stepData: Record<string, unknown> = {
-    [generalLabel]: generalData,
-    [subjectLabel]: subject,
-    [languageLabel]: language,
-    [photoLabel]: photo
+  const stepData: StepContextValue['stepData'] = {
+    general: generalData,
+    subjects: subject,
+    language: language,
+    photo: photo
   }
 
   const handleStepData = useCallback(
-    <T,>(stepLabel: string, data: T, errors?: Record<string, string>) => {
+    (stepLabel: string, data: unknown, errors?: Record<string, string>) => {
       switch (stepLabel) {
         case generalLabel:
           setGeneralData({
             data: data as GeneralInfoData,
-            errors: errors ?? {}
+            errors: errors || {}
           })
           break
         case subjectLabel:
@@ -90,6 +85,8 @@ const StepProvider = ({
         case photoLabel:
           setPhoto(data as PhotoData)
           break
+        default:
+          return
       }
     },
     [generalLabel, subjectLabel, languageLabel, photoLabel]
