@@ -3,7 +3,9 @@ import {
   useCallback,
   useContext,
   useState,
-  ReactNode
+  ReactNode,
+  useRef,
+  useMemo
 } from 'react'
 
 interface StepContextValue {
@@ -13,6 +15,9 @@ interface StepContextValue {
     language: LanguageData
     photo: PhotoData
   }
+  initialStepData: StepContextValue['stepData'] | null
+  markAsPristine: () => void
+
   handleStepData: (
     step: keyof StepContextValue['stepData'],
     data: unknown,
@@ -60,12 +65,21 @@ const StepProvider = ({
   const [photo, setPhoto] = useState<PhotoData>([])
   const [generalLabel, subjectLabel, languageLabel, photoLabel] = stepLabels
 
-  const stepData: StepContextValue['stepData'] = {
-    general: generalData,
-    subjects: subject,
-    language: language,
-    photo: photo
-  }
+  const stepData: StepContextValue['stepData'] = useMemo(
+    () => ({
+      general: generalData,
+      subjects: subject,
+      language: language,
+      photo: photo
+    }),
+    [generalData, subject, language, photo]
+  )
+
+  const initialStepDataRef = useRef<StepContextValue['stepData'] | null>(null)
+
+  const markAsPristine = useCallback(() => {
+    initialStepDataRef.current = structuredClone(stepData)
+  }, [stepData])
 
   const handleStepData = useCallback(
     (stepLabel: string, data: unknown, errors?: Record<string, string>) => {
@@ -93,7 +107,14 @@ const StepProvider = ({
   )
 
   return (
-    <StepContext.Provider value={{ stepData, handleStepData }}>
+    <StepContext.Provider
+      value={{
+        stepData,
+        initialStepData: initialStepDataRef.current,
+        markAsPristine,
+        handleStepData
+      }}
+    >
       {children}
     </StepContext.Provider>
   )

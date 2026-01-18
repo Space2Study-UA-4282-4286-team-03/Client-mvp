@@ -1,4 +1,4 @@
-import { FC, useState, ReactElement } from 'react'
+import { FC, useState, ReactElement, useEffect } from 'react'
 
 import StepWrapper from '~/components/step-wrapper/StepWrapper'
 import { useStepContext } from '~/context/step-context'
@@ -14,13 +14,20 @@ import { tutorStepLabels } from '../user-steps-wrapper/constants'
 interface UserStepsWrapperProps {
   userRole: string
 }
-
 const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
-  const { stepData } = useStepContext()
+  const { stepData, initialStepData, markAsPristine } = useStepContext()
 
-  useUnsavedChanges(stepData, { enabled: !!stepData })
+  useUnsavedChanges(stepData, {
+    enabled: true,
+    initialData: initialStepData
+  })
 
   const [isUserFetched, setIsUserFetched] = useState(false)
+  useEffect(() => {
+    if (isUserFetched) {
+      markAsPristine()
+    }
+  }, [isUserFetched, markAsPristine])
 
   const childrenArr: ReactElement[] = [
     <GeneralInfoStep
@@ -38,4 +45,5 @@ const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
 
   return <StepWrapper steps={stepLabels}>{childrenArr}</StepWrapper>
 }
+
 export default UserStepsContent
