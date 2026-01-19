@@ -10,7 +10,7 @@ import {
 
 interface StepContextValue {
   stepData: {
-    general: { data: GeneralInfoData; errors: Record<string, string> }
+    generalInfo: { data: GeneralInfoData; errors: Record<string, string> }
     subjects: SubjectsData
     language: LanguageData
     photo: PhotoData
@@ -67,7 +67,7 @@ const StepProvider = ({
 
   const stepData: StepContextValue['stepData'] = useMemo(
     () => ({
-      general: generalData,
+      generalInfo: generalData,
       subjects: subject,
       language: language,
       photo: photo
