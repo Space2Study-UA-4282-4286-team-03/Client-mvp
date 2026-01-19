@@ -1,37 +1,68 @@
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
 import subjectImg from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
-import { useEffect, useState } from 'react'
 import { categoriesMock } from './constants'
 import AppButton from '~/components/app-button/AppButton'
 import { useTranslation } from 'react-i18next'
 import AppAutoComplete from '~/components/app-auto-complete/AppAutoComplete'
-import { Typography } from '@mui/material'
 import AppChipList from '~/components/app-chips-list/AppChipList'
 import { subjectService } from '~/services/subject-service'
+import { useStepContext } from '~/context/step-context'
 
-const SubjectsStep = ({ btnsBox }) => {
+const SubjectsStep = ({ btnsBox, stepLabel }) => {
   const { t } = useTranslation()
+  const { stepData, handleStepData } = useStepContext()
+
+  const initialSelectedSubjects = useMemo(() => {
+    return stepData?.[stepLabel]?.data?.subjects || []
+  }, [stepData, stepLabel])
+
   const [categories, setCategories] = useState('')
   const [subject, setSubject] = useState('')
-  const [selectedSubjects, setSelectedSubjects] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [selectedSubjects, setSelectedSubjects] = useState(
+    initialSelectedSubjects
+  )
   const [subjects, setSubjects] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const syncContext = useCallback(
+    (nextSubjects) => {
+      handleStepData(
+        stepLabel,
+        {
+          data: {
+            subjects: nextSubjects
+          }
+        },
+        {}
+      )
+    },
+    [handleStepData, stepLabel]
+  )
 
   const handleAddSubject = () => {
-    if (
-      !subject ||
-      selectedSubjects.includes(subject) ||
-      selectedSubjects.length >= 5
-    )
-      return
-    setSelectedSubjects((prev) => [...prev, subject])
+    if (!subject) return
+
+    setSelectedSubjects((prev) => {
+      if (prev.includes(subject) || prev.length >= 5) return prev
+
+      const next = [...prev, subject]
+      syncContext(next)
+      return next
+    })
+
     setSubject('')
   }
 
   const handleDeleteSubject = (itemToDelete) => {
-    setSelectedSubjects((prev) => prev.filter((item) => item !== itemToDelete))
+    setSelectedSubjects((prev) => {
+      const next = prev.filter((item) => item !== itemToDelete)
+      syncContext(next)
+      return next
+    })
   }
 
   useEffect(() => {
@@ -39,16 +70,16 @@ const SubjectsStep = ({ btnsBox }) => {
       setSubjects([])
       return
     }
-
     const fetchSubjects = async () => {
       try {
         setIsLoading(true)
         const data = await subjectService.getSubjectsNames(categories)
-        const fields = data.map((item) => ({
-          title: item.name,
-          value: item._id
-        }))
-        setSubjects(fields)
+        setSubjects(
+          data.map((subject) => ({
+            value: subject._id,
+            title: subject.name
+          }))
+        )
       } catch (error) {
         console.error('Failed to load subjects', error)
       } finally {
@@ -57,6 +88,15 @@ const SubjectsStep = ({ btnsBox }) => {
     }
     fetchSubjects()
   }, [categories])
+
+  useEffect(() => {
+    console.log('stepDAta ', stepData)
+  }, [stepData])
+  useEffect(() => {
+    if (stepData?.[stepLabel]?.data?.subjects) {
+      setSelectedSubjects(stepData[stepLabel].data.subjects)
+    }
+  }, [stepLabel, stepData])
 
   return (
     <Box sx={styles.container}>
@@ -88,9 +128,14 @@ const SubjectsStep = ({ btnsBox }) => {
             ListboxProps={{ style: styles.autoCompleteListBox }}
             getOptionLabel={(option) => option.title}
             onChange={(_, newValue) => {
-              setCategories(newValue?.value || '')
-              setSubject('')
-              setSelectedSubjects([])
+              const nextCategory = newValue?.value || ''
+
+              if (nextCategory !== categories) {
+                setCategories(nextCategory)
+                setSubject('')
+                setSelectedSubjects([])
+                syncContext([])
+              }
             }}
             options={categoriesMock}
             textFieldProps={{

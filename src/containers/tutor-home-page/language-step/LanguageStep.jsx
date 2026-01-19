@@ -42,7 +42,7 @@ const LanguageStep = ({ btnsBox, stepLabel }) => {
 
   useEffect(() => {
     setLanguage(initialLanguage)
-  }, [initialLanguage])
+  }, [initialLanguage, stepData])
 
   return (
     <Box sx={styles.container}>
