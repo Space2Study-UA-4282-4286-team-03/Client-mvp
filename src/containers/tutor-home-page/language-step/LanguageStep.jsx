@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 
 import { styles } from '~/containers/tutor-home-page/language-step/LanguageStep.styles'
 import { LanguagesEnum } from '~/types'
+import { useStepContext } from '~/context/step-context'
 import img from '~/assets/img/tutor-home-page/become-tutor/languages.svg'
 
 const DEFAULT_LABEL = 'Your native language'
@@ -18,30 +19,30 @@ const LANGUAGES = [
   }))
 ]
 
-const LanguageStep = ({ btnsBox }) => {
-  const [language, setLanguage] = useState('')
+const LanguageStep = ({ btnsBox, stepLabel }) => {
+  const { stepData, handleStepData } = useStepContext()
 
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
+  const initialLanguage = useMemo(() => {
+    return stepData?.[stepLabel]?.language ?? ''
+  }, [stepData, stepLabel])
 
-    if (savedLanguage === DEFAULT_LABEL) {
-      localStorage.setItem('language', '')
-      setLanguage('')
-      return
-    }
-
-    if (savedLanguage && LANGUAGES.some((l) => l.value === savedLanguage)) {
-      setLanguage(savedLanguage)
-    } else {
-      setLanguage('')
-    }
-  }, [])
+  const [language, setLanguage] = useState(initialLanguage)
 
   const handleChange = (event) => {
     const value = event.target.value
     setLanguage(value)
-    localStorage.setItem('language', value)
+    handleStepData(
+      stepLabel,
+      {
+        language: value
+      },
+      {}
+    )
   }
+
+  useEffect(() => {
+    setLanguage(initialLanguage)
+  }, [initialLanguage])
 
   return (
     <Box sx={styles.container}>
