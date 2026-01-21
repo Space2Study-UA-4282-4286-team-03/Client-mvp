@@ -65,11 +65,12 @@ const UserProfileInfo: FC<UserProfileInfoProps> = ({
     e.stopPropagation()
   }
 
+  const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
+
   const avatar = (
-    <Avatar
-      src={photo && `${import.meta.env.VITE_APP_IMG_USER_URL}${photo}`}
-      sx={spliceSx(styles.avatar, sx.avatar)}
-    />
+    <Avatar src={photo || undefined} sx={spliceSx(styles.avatar, sx.avatar)}>
+      {!photo && initials}
+    </Avatar>
   )
 
   return (
