@@ -21,12 +21,9 @@ const ProfileContainerDesktop = ({
   return (
     <Box sx={styles.container}>
       <Box sx={styles.avatarContainer}>
-        <Avatar
-          src={userData.photo ? `${userData.photo}` : undefined}
-          sx={styles.img}
-        >
+        <Avatar src={userData.photo || undefined} sx={styles.img}>
           {!userData.photo &&
-            `${userData.firstName?.[0]}${userData.lastName?.[0]}`.toUpperCase()}
+            `${userData.firstName?.[0] ?? ''}${userData.lastName?.[0] ?? ''}`.toUpperCase()}
         </Avatar>
       </Box>
       {actionIcon}
