@@ -74,10 +74,15 @@ const useSteps = ({ steps }) => {
         city: city ?? ''
       },
       professionalSummary: professionalSummary,
-      mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? ''
+      mainSubjects: stepData.subjects.tutor?.map((item) =>
+        typeof item === 'object' ? item._id : item
+      ),
+      nativeLanguage: stepData.language?.language || stepData.language || ''
     }
-
+    console.log(
+      'SEND mainSubjects:',
+      JSON.stringify(data.mainSubjects, null, 2)
+    )
     !hasErrors && fetchData(data)
   }
 

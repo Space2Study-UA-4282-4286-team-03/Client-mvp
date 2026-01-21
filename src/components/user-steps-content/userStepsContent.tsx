@@ -9,7 +9,7 @@ import AddPhotoStep from '~/containers/tutor-home-page/add-photo-step/AddPhotoSt
 import SubjectsStep from '~/containers/tutor-home-page/subjects-step/SubjectsStep'
 import LanguageStep from '~/containers/tutor-home-page/language-step/LanguageStep'
 import { student } from '~/constants'
-import { tutorStepLabels } from '../user-steps-wrapper/constants'
+import { tutorStepLabels } from '~/components/user-steps-wrapper/constants'
 
 interface UserStepsWrapperProps {
   userRole: string
@@ -37,8 +37,8 @@ const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
       setIsUserFetched={setIsUserFetched}
       stepLabel='generalInfo'
     />,
-    <SubjectsStep btnsBox key='2' />,
-    <LanguageStep btnsBox key='3' />,
+    <SubjectsStep btnsBox key='2' stepLabel='subjects' />,
+    <LanguageStep btnsBox key='3' stepLabel='language' />,
     <AddPhotoStep btnsBox key='4' />
   ]
 
