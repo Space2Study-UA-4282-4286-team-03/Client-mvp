@@ -24,8 +24,8 @@ export const URLs = {
       `/locations/${countryId}/cities`
   },
   categories: {
-    get: '/categories',
-    getNames: '/categories/names',
+    get: '/resources-categories',
+    getNames: '/resources-categories/names',
     priceRange: '/price-range'
   },
   subjects: {
