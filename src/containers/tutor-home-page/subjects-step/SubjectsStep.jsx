@@ -68,7 +68,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
     const fetchCategories = async () => {
       try {
         setIsLoadingCategories(true)
-        const { data } = await axios.get('/api/subjects/categories')
+        const { data } = await axios.get('/api/categories')
 
         setCategories(data.map((cat) => ({ title: cat, value: cat })))
       } catch (error) {
