@@ -15,5 +15,10 @@ export const styles = {
     description: {
       typography: { xs: 'subtitle1' }
     }
+  },
+  accordionWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%'
   }
 }
