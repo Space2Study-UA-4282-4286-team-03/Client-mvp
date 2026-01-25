@@ -1,4 +1,4 @@
-import { useMatch } from 'react-router-dom'
+import { useMatch, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import Box from '@mui/material/Box'
@@ -26,6 +26,7 @@ const ProfileInfo = ({ userData }) => {
   const { setAlert } = useSnackBarContext()
   const isMyProfile = useMatch(authRoutes.accountMenu.myProfile.path)
   const { number, format } = getDifferenceDates(userData.createdAt, new Date())
+  const navigate = useNavigate()
 
   const copyProfileLink = () => {
     navigator.clipboard.writeText(window.location.href)
@@ -34,6 +35,10 @@ const ProfileInfo = ({ userData }) => {
       message: 'tutorProfilePage.profileInfo.copyProfileLink',
       duration: 2000
     })
+  }
+
+  const handleEditClick = () => {
+    navigate(authRoutes.accountMenu.myProfile.edit.path)
   }
 
   const actionIcon = isMyProfile ? (
@@ -45,8 +50,7 @@ const ProfileInfo = ({ userData }) => {
   const actionIconBtn = (
     <IconButton
       data-testid='icon-btn'
-      href={isMyProfile}
-      onClick={!isMyProfile ? copyProfileLink : undefined}
+      onClick={!isMyProfile ? copyProfileLink : handleEditClick}
       size={isLaptopAndAbove ? SizeEnum.Large : SizeEnum.Small}
       sx={styles.iconBtn}
     >

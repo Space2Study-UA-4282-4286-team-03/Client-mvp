@@ -1,0 +1,32 @@
+{
+  "accountSettings": {
+    "general": {
+      "title": "Налаштування акаунту",
+      "subtitle": "Керуйте налаштуваннями та перевагами свого акаунту.",
+      "backToProfile": "Повернутися до вашого профілю",
+      "menuProfile": "Профіль",
+      "menuNotifications": "Сповіщення",
+      "menuPasswordSecurity": "Пароль та безпека",
+      "profileTitle": "Профіль",
+      "profileDescription": "Тут ви можете редагувати публічну інформацію про себе.",
+      "tabsGeneral": "Загальні",
+      "tabsProfessional": "Професійні",
+      "tabsTimetable": "Розклад",
+      "tabsLinks": "Посилання",
+      "photoUpload": "Завантажити нове фото",
+      "photoMaxSize": "Максимальний розмір файлу – 10 МБ",
+      "photoRemoveButton": "Видалити",
+      "personalInfoTitle": "Особиста інформація",
+      "personalInfoDescription": "Ваше ім’я може з’являтися у Space2Study, коли вас згадують.",
+      "locationTitle": "Місцезнаходження",
+      "locationDescription": "Дайте знати учасникам, де ви знаходитесь.",
+      "professionalHeadlineTitle": "Професійний заголовок",
+      "professionalHeadlineDescription": "Коротко опишіть свій професійний статус. Максимум 200 символів.",
+      "professionalHeadlineText": "Текст тут",
+      "languagesDescription": "Перерахуйте мови, якими ви володієте і які можете викладати студентам.",
+      "videoTitle": "Презентаційне відео",
+      "videoDescription": "Додайте посилання на ваше відео-презентацію. Відео має бути публічним"
+    },
+    "updateProfile": "Оновити профіль"
+  }
+}

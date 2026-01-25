@@ -1,0 +1,32 @@
+{
+  "accountSettings": {
+    "general": {
+      "title": "Account Settings",
+      "subtitle": "Manage your account settings and preferences.",
+      "backToProfile": "Back to your personal profile",
+      "menuProfile": "Profile",
+      "menuNotifications": "Notifications",
+      "menuPasswordSecurity": "Password & Security",
+      "profileTitle": "Profile",
+      "profileDescription": "Here you can edit public information about yourself.",
+      "tabsGeneral": "General",
+      "tabsProfessional": "Professional",
+      "tabsTimetable": "Timetable",
+      "tabsLinks": "Links",
+      "photoUpload": "Upload new photo",
+      "photoMaxSize": "Maximum file size - 10 MB",
+      "photoRemoveButton": "Remove",
+      "personalInfoTitle": "Personal information",
+      "personalInfoDescription": "Your name may appear around Space2Study when mentioned.",
+      "locationTitle": "Location",
+      "locationDescription": "Let members know where you are based.",
+      "professionalHeadlineTitle": "Professional headline",
+      "professionalHeadlineText": "Text here",
+      "professionalHeadlineDescription": "Describe in short your professional status. Maximum 200 characters.",
+      "languagesDescription": "List the languages you speak and can teach your students.",
+      "videoTitle": "Video presentation",
+      "videoDescription": "Add the link to your presentational video. Your video needs to be public"
+    },
+    "updateProfile": "Update profile"
+  }
+}
