@@ -14,7 +14,6 @@ import AppTextArea from '~/components/app-text-area/AppTextArea'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import Drawer from '@mui/material/Drawer'
-
 const EditProfile = () => {
   const {t} = useTranslation()
   const navigate = useNavigate()
@@ -28,7 +27,7 @@ const EditProfile = () => {
   lastName: '',
   professionalSummary: ''
 })
-const handleChange = (field: keyof typeof data) => (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleChange = (field: keyof typeof data) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   setData(prev => ({
     ...prev,
     [field]: e.target.value
@@ -231,5 +230,4 @@ const handleUpdateProfile = () => {
 </PageWrapper>
   )
 }
-
 export default EditProfile
