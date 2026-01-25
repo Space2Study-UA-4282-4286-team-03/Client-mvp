@@ -7,7 +7,7 @@ import { styles } from './EditProfile.styles'
 import { useNavigate } from 'react-router-dom'
 import { authRoutes } from '~/router/constants/authRoutes'
 import MenuItem from '@mui/material/MenuItem'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Avatar from '@mui/material/Avatar'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppTextArea from '~/components/app-text-area/AppTextArea'
@@ -21,7 +21,17 @@ const EditProfile = () => {
   const handleBack = () => {
     navigate(authRoutes.accountMenu.myProfile.path)
   }
-  const[photo,setPhoto] = useState<File | null>(null)
+  const [photo,setPhoto] = useState<File | null>(null)
+  const [photoUrl, setPhotoUrl] = useState<string | undefined>(undefined)
+   useEffect(() => {
+   if (!photo) {
+     setPhotoUrl(undefined)
+     return
+  }
+  const url = URL.createObjectURL(photo)
+  setPhotoUrl(url)
+  return () => URL.revokeObjectURL(url)
+  }, [photo])
   const [data, setData] = useState({
   firstName: '',
   lastName: '',
@@ -86,6 +96,7 @@ const handleUpdateProfile = () => {
       <Box sx={styles.content}>
         <Box sx={styles.formContent}>
  <IconButton
+    aria-label="Open menu"
     sx={styles.mobileMenuButton}
     onClick={() => setMobileMenuOpen(true)}
   >
@@ -136,7 +147,7 @@ const handleUpdateProfile = () => {
   <Box sx={{ mt: 2 }}>
     <Box sx={styles.photoRow}>
       <Avatar
-        src={photo ? URL.createObjectURL(photo) : undefined}
+        src={photoUrl}
         sx={styles.avatar}
       />
       <Box>
