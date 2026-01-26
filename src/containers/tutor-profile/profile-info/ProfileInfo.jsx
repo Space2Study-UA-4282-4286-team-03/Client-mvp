@@ -49,10 +49,10 @@ const ProfileInfo = ({ userData }) => {
 
   const mergedUserData = {
   ...userData,
-  firstName: localProfile?.firstName ?? userData.firstName,
-  lastName: localProfile?.lastName ?? userData.lastName,
+  firstName: localProfile?.firstName || userData.firstName,
+  lastName: localProfile?.lastName || userData.lastName,
   professionalSummary:
-    localProfile?.professionalSummary ?? userData.professionalSummary
+    localProfile?.professionalSummary || userData.professionalSummary
 }
 
   const handleEditClick = () => {
