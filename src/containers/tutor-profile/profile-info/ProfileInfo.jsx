@@ -1,5 +1,6 @@
 import { useMatch, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -36,6 +37,23 @@ const ProfileInfo = ({ userData }) => {
       duration: 2000
     })
   }
+  const STORAGE_KEY = 'edit-profile-form'
+  const [localProfile, setLocalProfile] = useState(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      setLocalProfile(JSON.parse(saved))
+    }
+  }, [])
+
+  const mergedUserData = {
+  ...userData,
+  firstName: localProfile?.firstName ?? userData.firstName,
+  lastName: localProfile?.lastName ?? userData.lastName,
+  professionalSummary:
+    localProfile?.professionalSummary ?? userData.professionalSummary
+}
 
   const handleEditClick = () => {
     navigate(authRoutes.accountMenu.myProfile.edit.path)
@@ -133,7 +151,7 @@ const ProfileInfo = ({ userData }) => {
       chipItems={subjectData}
       defaultQuantity={isLaptopAndAbove ? 4 : 2}
       doneItems={doneItems}
-      userData={userData}
+      userData={mergedUserData}
     />
   ) : (
     <ProfileContainerMobile
@@ -143,7 +161,7 @@ const ProfileInfo = ({ userData }) => {
       chipItems={subjectData}
       defaultQuantity={4}
       doneItems={doneItems}
-      userData={userData}
+      userData={mergedUserData}
     />
   )
 }

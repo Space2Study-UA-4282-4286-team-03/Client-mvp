@@ -34,12 +34,6 @@ const EditProfile = () => {
   return () => URL.revokeObjectURL(url)
   }, [photo])
 
-  const [data, setData] = useState({
-  firstName: '',
-  lastName: '',
-  professionalSummary: ''
-})
-
 const handleChange = (field: keyof typeof data) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   setData(prev => ({
     ...prev,
@@ -47,6 +41,7 @@ const handleChange = (field: keyof typeof data) => (e: ChangeEvent<HTMLInputElem
   }))
 }
 const handleUpdateProfile = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   navigate(authRoutes.accountMenu.myProfile.path)
 }
   const [activeMenu, setActiveMenu] = useState('profile')
@@ -62,6 +57,21 @@ const handleUpdateProfile = () => {
     { id: 'notifications', label: t('editProfile.accountSettings.general.menuNotifications') },
     { id: 'password', label: t('editProfile.accountSettings.general.menuPasswordSecurity') }
   ]
+
+const STORAGE_KEY = 'edit-profile-form'
+
+const [data, setData] = useState({
+  firstName: '',
+  lastName: '',
+  professionalSummary: ''
+})
+
+useEffect(() => {
+  const saved = localStorage.getItem(STORAGE_KEY)
+  if (saved) {
+    setData(JSON.parse(saved))
+  }
+}, [])
   
   return (
   <PageWrapper>
