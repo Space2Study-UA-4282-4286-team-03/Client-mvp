@@ -1,5 +1,6 @@
-import { useMatch } from 'react-router-dom'
+import { useMatch, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -26,6 +27,7 @@ const ProfileInfo = ({ userData }) => {
   const { setAlert } = useSnackBarContext()
   const isMyProfile = useMatch(authRoutes.accountMenu.myProfile.path)
   const { number, format } = getDifferenceDates(userData.createdAt, new Date())
+  const navigate = useNavigate()
 
   const copyProfileLink = () => {
     navigator.clipboard.writeText(window.location.href)
@@ -34,6 +36,27 @@ const ProfileInfo = ({ userData }) => {
       message: 'tutorProfilePage.profileInfo.copyProfileLink',
       duration: 2000
     })
+  }
+  const STORAGE_KEY = 'edit-profile-form'
+  const [localProfile, setLocalProfile] = useState(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      setLocalProfile(JSON.parse(saved))
+    }
+  }, [])
+
+  const mergedUserData = {
+  ...userData,
+  firstName: localProfile?.firstName || userData.firstName,
+  lastName: localProfile?.lastName || userData.lastName,
+  professionalSummary:
+    localProfile?.professionalSummary || userData.professionalSummary
+}
+
+  const handleEditClick = () => {
+    navigate(authRoutes.accountMenu.myProfile.edit.path)
   }
 
   const actionIcon = isMyProfile ? (
@@ -45,8 +68,7 @@ const ProfileInfo = ({ userData }) => {
   const actionIconBtn = (
     <IconButton
       data-testid='icon-btn'
-      href={isMyProfile}
-      onClick={!isMyProfile ? copyProfileLink : undefined}
+      onClick={!isMyProfile ? copyProfileLink : handleEditClick}
       size={isLaptopAndAbove ? SizeEnum.Large : SizeEnum.Small}
       sx={styles.iconBtn}
     >
@@ -129,7 +151,7 @@ const ProfileInfo = ({ userData }) => {
       chipItems={subjectData}
       defaultQuantity={isLaptopAndAbove ? 4 : 2}
       doneItems={doneItems}
-      userData={userData}
+      userData={mergedUserData}
     />
   ) : (
     <ProfileContainerMobile
@@ -139,7 +161,7 @@ const ProfileInfo = ({ userData }) => {
       chipItems={subjectData}
       defaultQuantity={4}
       doneItems={doneItems}
-      userData={userData}
+      userData={mergedUserData}
     />
   )
 }
