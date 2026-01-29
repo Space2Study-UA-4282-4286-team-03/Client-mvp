@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-max-depth */
-
 import { Button, Typography } from '@mui/material'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import { useTranslation } from 'react-i18next'
