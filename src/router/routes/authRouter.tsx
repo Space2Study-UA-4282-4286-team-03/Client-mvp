@@ -57,7 +57,7 @@ export const authRouter = (
       handle={{ crumb: myProfile }}
       path={authRoutes.accountMenu.myProfile.route}
     />
-     <Route
+    <Route
       element={<EditProfile />}
       handle={{ crumb: myProfile }}
       path={authRoutes.accountMenu.myProfile.edit.route}
