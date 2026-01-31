@@ -10,8 +10,8 @@ import { useState, useEffect } from 'react'
 import { style } from '~/containers/tutor-home-page/add-photo-step/AddPhotoStep.style'
 const MAX_FILE_SIZE_MB = 10 * 1024 * 1024
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg']
-const AddPhotoStep = ({ btnsBox }) => {
-  const { handleStepData } = useStepContext()
+const AddPhotoStep = ({ btnsBox, stepLabel }) => {
+  const { stepData, handleStepData } = useStepContext()
   const [previewPhoto, setPreviewPhoto] = useState(null)
   const [fileError, setFileError] = useState('')
   const { t } = useTranslation()
@@ -33,8 +33,8 @@ const AddPhotoStep = ({ btnsBox }) => {
     const previewUrl = URL.createObjectURL(file)
     setPreviewPhoto(previewUrl)
     setButtonLabel(file.name)
-    handleStepData((prev) => ({ ...prev, photo: [file] }))
-    console.log('Uploaded file:', file)
+    handleStepData(stepLabel, [file])
+    console.log('File selected:', stepData)
   }
   useEffect(() => {
     return () => {
@@ -54,37 +54,32 @@ const AddPhotoStep = ({ btnsBox }) => {
           xs={12}
         >
           <Box sx={style.uploadBox}>
-            {' '}
             {previewPhoto ? (
               <img alt='Photo Preview' src={previewPhoto} style={style.img} />
             ) : (
               <Typography>{t('becomeTutor.photo.placeholder')}</Typography>
-            )}{' '}
-          </Box>{' '}
-        </Grid>{' '}
+            )}
+          </Box>
+        </Grid>
         <Grid item md={6} order={{ xs: 1, md: 2 }} sx={style.rightBox} xs={12}>
-          {' '}
           <Grid>
-            {' '}
             <Typography sx={style.description}>
-              {' '}
-              {t('becomeTutor.photo.description')}{' '}
-            </Typography>{' '}
+              {t('becomeTutor.photo.description')}
+            </Typography>
             <Button
               component='label'
               startIcon={<CloudUploadIcon />}
               sx={style.fileUploader.button}
               variant='contained'
             >
-              {' '}
-              <Typography>{buttonLabel}</Typography>{' '}
-              <VisuallyHiddenInput onChange={handleFileUpload} type='file' />{' '}
-            </Button>{' '}
-            {fileError && <Typography color='error'>{fileError}</Typography>}{' '}
-          </Grid>{' '}
-          {btnsBox}{' '}
-        </Grid>{' '}
-      </Grid>{' '}
+              <Typography>{buttonLabel}</Typography>
+              <VisuallyHiddenInput onChange={handleFileUpload} type='file' />
+            </Button>
+            {fileError && <Typography color='error'>{fileError}</Typography>}
+          </Grid>
+          {btnsBox}
+        </Grid>
+      </Grid>
     </Box>
   )
 }

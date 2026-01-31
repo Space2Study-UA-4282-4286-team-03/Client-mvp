@@ -39,7 +39,7 @@ const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
     />,
     <SubjectsStep btnsBox key='2' stepLabel='subjects' />,
     <LanguageStep btnsBox key='3' stepLabel='language' />,
-    <AddPhotoStep btnsBox key='4' />
+    <AddPhotoStep btnsBox key='4' stepLabel='photoLabel' />
   ]
 
   const stepLabels = userRole === student ? '' : tutorStepLabels

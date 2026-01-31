@@ -8,6 +8,7 @@ import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
 import { snackbarVariants } from '~/constants'
+import { uploadPhotoFile } from '~/utils/uploadFile'
 
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -59,31 +60,36 @@ const useSteps = ({ steps }) => {
 
   const isLastStep = activeStep === steps.length - 1
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const hasErrors = stepErrors.find((error) => error)
+
+    if (hasErrors) return
 
     const { firstName, lastName, country, city, professionalSummary } =
       stepData.generalInfo.data
 
+    const file = stepData.photo?.[0]
+
+    console.log('Submitting file:', stepData)
+
+    const photoUrl = await uploadPhotoFile(file)
+
     const data = {
-      photo: stepData.photo[0] ? stepData.photo[0] : '',
+      photo: photoUrl,
       firstName,
       lastName,
       address: {
         country: country ?? '',
         city: city ?? ''
       },
-      professionalSummary: professionalSummary,
+      professionalSummary,
       mainSubjects: stepData.subjects.tutor?.map((item) =>
         typeof item === 'object' ? item._id : item
       ),
       nativeLanguage: stepData.language?.language || stepData.language || ''
     }
-    console.log(
-      'SEND mainSubjects:',
-      JSON.stringify(data.mainSubjects, null, 2)
-    )
-    !hasErrors && fetchData(data)
+
+    fetchData(data)
   }
 
   const stepOperation = {
