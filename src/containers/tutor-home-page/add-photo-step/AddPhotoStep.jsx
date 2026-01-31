@@ -6,19 +6,74 @@ import { Button, IconButton } from '@mui/material'
 import { Grid } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloseIcon from '@mui/icons-material/Close'
+
 import VisuallyHiddenInput from '~/components/visually-hidden-input/VisuallyHiddenInput'
+import { style } from '~/containers/tutor-home-page/add-photo-step/AddPhotoStep.style'
+import { useCallback } from 'react'
+
 import { useStepContext } from '~/context/step-context'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
-import { style } from '~/containers/tutor-home-page/add-photo-step/AddPhotoStep.style'
+import { useAppSelector } from '~/hooks/use-redux'
+import { userService } from '~/services/user-service'
+import useAxios from '~/hooks/use-axios'
+
 const MAX_FILE_SIZE_MB = 10 * 1024 * 1024
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg']
-const AddPhotoStep = ({ btnsBox, stepLabel }) => {
-  const { handleStepData } = useStepContext()
+
+const AddPhotoStep = ({
+  btnsBox,
+  stepLabel,
+  isUserFetched,
+  setIsUserFetched
+}) => {
+  const { stepData, handleStepData } = useStepContext()
   const [previewPhoto, setPreviewPhoto] = useState(null)
+  const [fromDB, setFromDB] = useState(true)
   const [fileError, setFileError] = useState('')
   const { t } = useTranslation()
   const [buttonLabel, setButtonLabel] = useState(t('becomeTutor.photo.button'))
+
+  const { userId, userRole } = useAppSelector((state) => state.appMain)
+
+  const fetchUser = useCallback(() => {
+    return userService.getUserById(userId, userRole)
+  }, [userId, userRole])
+
+  const { response: userResp } = useAxios({
+    service: fetchUser,
+    fetchOnMount: true,
+    defaultResponse: null
+  })
+
+  useEffect(() => {
+    const savedPhoto = stepData?.[stepLabel]?.[0]
+    if (savedPhoto) {
+      const previewUrl =
+        typeof savedPhoto === 'string'
+          ? savedPhoto
+          : URL.createObjectURL(savedPhoto)
+      setPreviewPhoto(previewUrl)
+      setButtonLabel(savedPhoto.name || 'avatar.jpg')
+    } else if (userResp && !isUserFetched && fromDB) {
+      if (userResp.photo) {
+        setPreviewPhoto(userResp.photo)
+        setButtonLabel(t('savedPhoto'))
+      }
+      setIsUserFetched && setIsUserFetched(true)
+    } else {
+      setButtonLabel(t('becomeTutor.photo.button'))
+    }
+  }, [
+    stepData,
+    stepLabel,
+    userResp,
+    isUserFetched,
+    setIsUserFetched,
+    t,
+    fromDB
+  ])
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0]
     if (!file) return
@@ -36,7 +91,8 @@ const AddPhotoStep = ({ btnsBox, stepLabel }) => {
     const previewUrl = URL.createObjectURL(file)
     setPreviewPhoto(previewUrl)
     setButtonLabel(file.name)
-    handleStepData(stepLabel, [file])
+    handleStepData(stepLabel, [file], {})
+    setFromDB(false)
   }
   useEffect(() => {
     return () => {
@@ -52,9 +108,10 @@ const AddPhotoStep = ({ btnsBox, stepLabel }) => {
       URL.revokeObjectURL(previewPhoto)
     }
     setPreviewPhoto(null)
+    setFromDB(false)
     setButtonLabel(t('becomeTutor.photo.button'))
     setFileError('')
-    handleStepData(stepLabel, [])
+    handleStepData(stepLabel, [], {})
     const input = document.getElementById('add-photo-input')
     if (input) input.value = null
   }
