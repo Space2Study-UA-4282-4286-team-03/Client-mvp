@@ -1,8 +1,11 @@
+/* eslint-disable react/jsx-max-depth */
+
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
+import { Button, IconButton } from '@mui/material'
 import { Grid } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import CloseIcon from '@mui/icons-material/Close'
 import VisuallyHiddenInput from '~/components/visually-hidden-input/VisuallyHiddenInput'
 import { useStepContext } from '~/context/step-context'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +14,7 @@ import { style } from '~/containers/tutor-home-page/add-photo-step/AddPhotoStep.
 const MAX_FILE_SIZE_MB = 10 * 1024 * 1024
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg']
 const AddPhotoStep = ({ btnsBox, stepLabel }) => {
-  const { stepData, handleStepData } = useStepContext()
+  const { handleStepData } = useStepContext()
   const [previewPhoto, setPreviewPhoto] = useState(null)
   const [fileError, setFileError] = useState('')
   const { t } = useTranslation()
@@ -34,7 +37,6 @@ const AddPhotoStep = ({ btnsBox, stepLabel }) => {
     setPreviewPhoto(previewUrl)
     setButtonLabel(file.name)
     handleStepData(stepLabel, [file])
-    console.log('File selected:', stepData)
   }
   useEffect(() => {
     return () => {
@@ -43,6 +45,19 @@ const AddPhotoStep = ({ btnsBox, stepLabel }) => {
       }
     }
   }, [previewPhoto])
+  const handleRemovePhoto = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+    if (previewPhoto) {
+      URL.revokeObjectURL(previewPhoto)
+    }
+    setPreviewPhoto(null)
+    setButtonLabel(t('becomeTutor.photo.button'))
+    setFileError('')
+    handleStepData(stepLabel, [])
+    const input = document.getElementById('add-photo-input')
+    if (input) input.value = null
+  }
   return (
     <Box sx={style.root}>
       <Grid container>
@@ -66,15 +81,31 @@ const AddPhotoStep = ({ btnsBox, stepLabel }) => {
             <Typography sx={style.description}>
               {t('becomeTutor.photo.description')}
             </Typography>
-            <Button
-              component='label'
-              startIcon={<CloudUploadIcon />}
-              sx={style.fileUploader.button}
-              variant='contained'
-            >
-              <Typography>{buttonLabel}</Typography>
-              <VisuallyHiddenInput onChange={handleFileUpload} type='file' />
-            </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                component='label'
+                startIcon={<CloudUploadIcon />}
+                sx={style.fileUploader.button}
+                variant='contained'
+              >
+                <Typography>{buttonLabel}</Typography>
+                <VisuallyHiddenInput
+                  id='add-photo-input'
+                  onChange={handleFileUpload}
+                  type='file'
+                />{' '}
+                {previewPhoto && (
+                  <IconButton
+                    aria-label={t('becomeTutor.photo.remove')}
+                    onClick={handleRemovePhoto}
+                    size='small'
+                    sx={{ ml: 1 }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                )}
+              </Button>
+            </Box>
             {fileError && <Typography color='error'>{fileError}</Typography>}
           </Grid>
           {btnsBox}

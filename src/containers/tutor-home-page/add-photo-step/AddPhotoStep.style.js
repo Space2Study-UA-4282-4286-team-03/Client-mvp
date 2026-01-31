@@ -38,7 +38,7 @@ export const style = {
     border: '2px primary',
     borderColor: 'primary.900'
   },
-  rigthBox: {
+  rightBox: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -52,7 +52,9 @@ export const style = {
   },
   fileUploader: {
     button: {
-      textAlign: 'center'
+      textAlign: 'center',
+      color: 'black',
+      backgroundColor: 'common.white'
     },
     root: {
       display: 'flex',
