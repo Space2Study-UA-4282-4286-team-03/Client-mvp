@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '~/hooks/use-redux'
 
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -11,7 +11,6 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 
 import { styles } from '~/containers/guest-home-page/tutor-signup-form/TutorSignupForm.styles'
-import { RootState } from '~/redux/store'
 
 interface TutorSignupFormData {
   firstName: string
@@ -57,7 +56,7 @@ const TutorSignupForm: FC<TutorSignupFormProps> = ({
     showInputText: showConfirmPassword
   } = useInputVisibility(errors.confirmPassword)
 
-  const { authLoading } = useSelector((state: RootState) => state.appMain)
+  const { authLoading } = useAppSelector((state) => state.appMain)
   const { t } = useTranslation()
 
   return (

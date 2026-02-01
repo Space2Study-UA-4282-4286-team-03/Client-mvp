@@ -103,6 +103,7 @@ const Navbar = () => {
     <Box sx={styles.header}>
       <Button
         component={Link}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         size={SizeEnum.Small}
         sx={styles.logoButton}
         to={guestRoutes.home.path}

@@ -9,7 +9,7 @@ describe('EditProfile', () => {
   })
 
   it('should render EditProfile with content', () => {
-    const editProfileText = screen.getByText('EditProfile Page Placeholder')
-    expect(editProfileText).toBeInTheDocument()
+    const title = screen.getByText('editProfile.accountSettings.general.title')
+    expect(title).toBeInTheDocument()
   })
 })

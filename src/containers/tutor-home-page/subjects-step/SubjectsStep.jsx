@@ -1,62 +1,115 @@
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Box from '@mui/material/Box'
-
+import { Typography } from '@mui/material'
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
 import subjectImg from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
-import { useEffect, useState } from 'react'
-import { categoriesMock } from './constants'
 import AppButton from '~/components/app-button/AppButton'
 import { useTranslation } from 'react-i18next'
 import AppAutoComplete from '~/components/app-auto-complete/AppAutoComplete'
-import { Typography } from '@mui/material'
 import AppChipList from '~/components/app-chips-list/AppChipList'
-import { subjectService } from '~/services/subject-service'
+import { useStepContext } from '~/context/step-context'
+import axios from 'axios'
 
-const SubjectsStep = ({ btnsBox }) => {
+const SubjectsStep = ({ btnsBox, stepLabel }) => {
   const { t } = useTranslation()
-  const [categories, setCategories] = useState('')
-  const [subject, setSubject] = useState('')
-  const [selectedSubjects, setSelectedSubjects] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const { stepData, handleStepData } = useStepContext()
+
+  const initialSelectedSubjects = useMemo(
+    () =>
+      Array.isArray(stepData?.[stepLabel]?.tutor)
+        ? stepData[stepLabel].tutor
+        : [],
+    [stepData, stepLabel]
+  )
+
+  const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [subject, setSubject] = useState(null)
+
+  const [selectedSubjects, setSelectedSubjects] = useState(
+    initialSelectedSubjects
+  )
   const [subjects, setSubjects] = useState([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false)
+  const [isLoadingSubjects, setIsLoadingSubjects] = useState(false)
+
+  const syncContext = useCallback(
+    (nextSubjects) => {
+      handleStepData(stepLabel, { tutor: nextSubjects }, {})
+    },
+    [handleStepData, stepLabel]
+  )
 
   const handleAddSubject = () => {
-    if (
-      !subject ||
-      selectedSubjects.includes(subject) ||
-      selectedSubjects.length >= 5
-    )
-      return
-    setSelectedSubjects((prev) => [...prev, subject])
-    setSubject('')
+    if (!subject) return
+
+    setSelectedSubjects((prev) => {
+      if (prev.some((s) => s._id === subject.value) || prev.length >= 5)
+        return prev
+
+      const next = [...prev, { _id: subject.value, title: subject.title }]
+
+      handleStepData(stepLabel, { tutor: next }, {})
+      return next
+    })
+
+    setSubject(null)
   }
 
   const handleDeleteSubject = (itemToDelete) => {
-    setSelectedSubjects((prev) => prev.filter((item) => item !== itemToDelete))
+    setSelectedSubjects((prev) => {
+      const next = prev.filter((s) => s._id !== itemToDelete._id)
+      handleStepData(stepLabel, { tutor: next }, {})
+      return next
+    })
   }
 
   useEffect(() => {
-    if (!categories) {
+    const fetchCategories = async () => {
+      try {
+        setIsLoadingCategories(true)
+        const { data } = await axios.get('/api/categories')
+
+        setCategories(data.map((cat) => ({ title: cat, value: cat })))
+      } catch (error) {
+        console.error('Failed to load categories', error)
+      } finally {
+        setIsLoadingCategories(false)
+      }
+    }
+
+    fetchCategories()
+  }, [])
+
+  useEffect(() => {
+    if (!selectedCategory) {
       setSubjects([])
       return
     }
 
     const fetchSubjects = async () => {
       try {
-        setIsLoading(true)
-        const data = await subjectService.getSubjectsNames(categories)
-        const fields = data.map((item) => ({
-          title: item.name,
-          value: item._id
-        }))
-        setSubjects(fields)
+        setIsLoadingSubjects(true)
+        const { data } = await axios.get('/api/subjects', {
+          params: { category: selectedCategory }
+        })
+
+        setSubjects(data.map((s) => ({ title: s.title, value: s._id })))
       } catch (error) {
         console.error('Failed to load subjects', error)
       } finally {
-        setIsLoading(false)
+        setIsLoadingSubjects(false)
       }
     }
+
     fetchSubjects()
-  }, [categories])
+  }, [selectedCategory])
+
+  useEffect(() => {
+    if (Array.isArray(stepData?.[stepLabel]?.tutor)) {
+      setSelectedSubjects(stepData[stepLabel].tutor)
+    }
+  }, [stepLabel, stepData])
 
   return (
     <Box sx={styles.container}>
@@ -87,30 +140,35 @@ const SubjectsStep = ({ btnsBox }) => {
           <AppAutoComplete
             ListboxProps={{ style: styles.autoCompleteListBox }}
             getOptionLabel={(option) => option.title}
+            loading={isLoadingCategories}
             onChange={(_, newValue) => {
-              setCategories(newValue?.value || '')
-              setSubject('')
-              setSelectedSubjects([])
+              const nextCategory = newValue?.value || ''
+              if (nextCategory !== selectedCategory) {
+                setSelectedCategory(nextCategory)
+                setSubject('')
+                setSelectedSubjects([])
+                syncContext([])
+              }
             }}
-            options={categoriesMock}
+            options={categories}
             textFieldProps={{
               placeholder: t('becomeTutor.categories.mainSubjectsLabel'),
               label: t('becomeTutor.categories.mainSubjectsLabel')
             }}
             value={
-              categoriesMock.find((item) => item.value === categories) || null
+              categories.find((item) => item.value === selectedCategory) || null
             }
           />
 
           <AppAutoComplete
             ListboxProps={{ style: styles.autoCompleteListBox }}
-            disabled={!categories || isLoading}
+            disabled={!selectedCategory || isLoadingSubjects}
             getOptionLabel={(option) => option.title}
-            loading={isLoading}
+            loading={isLoadingSubjects}
             onChange={(_, newValue) => {
-              setSubject(newValue?.value || '')
+              setSubject(newValue || null)
             }}
-            options={subjects.length ? subjects : []}
+            options={subjects}
             textFieldProps={{
               placeholder: t('becomeTutor.categories.subjectLabel'),
               label: t('becomeTutor.categories.subjectLabel')
@@ -126,7 +184,7 @@ const SubjectsStep = ({ btnsBox }) => {
             <AppChipList
               defaultQuantity={2}
               handleChipDelete={handleDeleteSubject}
-              items={selectedSubjects}
+              items={selectedSubjects.map((s) => s.title)}
               wrapperStyle={styles.chipsBox}
             />
           </Box>

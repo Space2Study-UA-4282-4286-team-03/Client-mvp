@@ -8,6 +8,7 @@ import {
 } from 'react'
 import PopupDialog from '~/components/popup-dialog/PopupDialog'
 import { PaperProps } from '@mui/material/Paper'
+import useConfirm from '~/hooks/use-confirm'
 
 interface Component {
   component: React.ReactElement
@@ -17,7 +18,7 @@ interface Component {
 interface ModalProvideContext {
   openModal: (component: Component, delayToClose?: number) => void
   closeModal: () => void
-  setIsDirty: (dirty: boolean) => void
+  setIsDirty: (isDirty: boolean) => void
 }
 
 interface ModalProviderProps {
@@ -32,14 +33,21 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
-  const [isDirty, setIsDirty] = useState(false)
+  const { setNeedConfirmation } = useConfirm()
+
+  const setIsDirty = useCallback(
+    (dirty: boolean) => {
+      setNeedConfirmation(dirty)
+    },
+    [setNeedConfirmation]
+  )
 
   const closeModal = useCallback(() => {
     setModal(null)
     setPaperProps({})
     setTimer(null)
-    setIsDirty(false)
-  }, [setModal, setPaperProps, setTimer, setIsDirty])
+    setNeedConfirmation(false)
+  }, [setModal, setPaperProps, setTimer, setNeedConfirmation])
 
   const closeModalAfterDelay = useCallback(
     (delay?: number) => {
@@ -72,7 +80,6 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
           closeModal={closeModal}
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
-          isDirty={isDirty}
           paperProps={paperProps}
           timerId={timer}
         />

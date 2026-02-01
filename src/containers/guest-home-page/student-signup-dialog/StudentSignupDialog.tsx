@@ -7,6 +7,7 @@ import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
 import StudentSignupForm from '~/containers/guest-home-page/student-signup-form/StudentSignupForm'
 import NotificationModal from '~/containers/guest-home-page/notification-modal/NotificationModal'
 import useForm from '~/hooks/use-form'
+import useConfirm from '~/hooks/use-confirm'
 import { useSignUpMutation } from '~/services/auth-service'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
@@ -31,6 +32,20 @@ const StudentSignupDialog = () => {
   const { closeModal, openModal, setIsDirty } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const [signUp] = useSignUpMutation()
+  const { checkConfirmation } = useConfirm()
+
+  const handleClose = useCallback((): void => {
+    void (async () => {
+      const ok = await checkConfirmation({
+        title: t('common.confirmTitle'),
+        message: t('questions.unsavedChanges'),
+        confirmButton: t('common.confirmButton'),
+        cancelButton: t('common.cancel')
+      })
+
+      if (ok) closeModal()
+    })()
+  }, [checkConfirmation, closeModal, t])
 
   const showSuccessModal = useCallback(
     (email: string) => {
@@ -46,13 +61,13 @@ const StudentSignupDialog = () => {
               </>
             }
             img={successImg}
-            onClose={closeModal}
+            onClose={handleClose}
             title={t('signup.confirmEmailTitle')}
           />
         )
       })
     },
-    [openModal, closeModal, t]
+    [openModal, t, handleClose]
   )
 
   const { handleSubmit, handleInputChange, handleBlur, data, errors, isDirty } =
