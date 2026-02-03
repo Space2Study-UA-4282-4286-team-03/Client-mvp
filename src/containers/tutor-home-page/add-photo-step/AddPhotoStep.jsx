@@ -21,12 +21,7 @@ import useAxios from '~/hooks/use-axios'
 const MAX_FILE_SIZE_MB = 10 * 1024 * 1024
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg']
 
-const AddPhotoStep = ({
-  btnsBox,
-  stepLabel,
-  setIsUserFetched,
-  isUserFetched
-}) => {
+const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
   const fileInputRef = useRef(null)
   const { stepData, handleStepData } = useStepContext()
   const [previewPhoto, setPreviewPhoto] = useState(null)
@@ -50,31 +45,20 @@ const AddPhotoStep = ({
 
   useEffect(() => {
     const savedPhoto = stepData?.[stepLabel]?.[0]
-    if (savedPhoto) {
-      const previewUrl =
-        typeof savedPhoto === 'string'
-          ? savedPhoto
-          : URL.createObjectURL(savedPhoto)
-      setPreviewPhoto(previewUrl)
-      setButtonLabel(savedPhoto.name || 'avatar.jpg')
-    } else if (userResp && !isUserFetched && fromDB) {
-      if (userResp.photo) {
-        setPreviewPhoto(userResp.photo)
-        setButtonLabel(t('savedPhoto'))
-      }
-      setIsUserFetched && setIsUserFetched(true)
-    } else {
-      setButtonLabel(t('becomeTutor.photo.button'))
+    if (!savedPhoto) return
+
+    if (typeof savedPhoto === 'string') {
+      setPreviewPhoto(savedPhoto)
+      setButtonLabel('avatar.jpg')
+      return
     }
-  }, [
-    stepData,
-    stepLabel,
-    userResp,
-    isUserFetched,
-    fromDB,
-    t,
-    setIsUserFetched
-  ])
+
+    const objectUrl = URL.createObjectURL(savedPhoto)
+    setPreviewPhoto(objectUrl)
+    setButtonLabel(savedPhoto.name)
+
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [stepData, stepLabel])
 
   const applyFile = useCallback(
     (file) => {
@@ -121,14 +105,6 @@ const AddPhotoStep = ({
     applyFile(file)
   }
 
-  useEffect(() => {
-    return () => {
-      if (previewPhoto) {
-        URL.revokeObjectURL(previewPhoto)
-      }
-    }
-  }, [previewPhoto])
-
   const handleRemovePhoto = (event) => {
     event.stopPropagation()
     event.preventDefault()
@@ -148,13 +124,24 @@ const AddPhotoStep = ({
     }
   }
 
+  useEffect(() => {
+    if (stepData?.[stepLabel]?.length) return
+    if (!userResp?.photo) return
+    if (!fromDB) return
+
+    const savedPhoto = userResp.photo
+    setPreviewPhoto(savedPhoto)
+    setButtonLabel(t('savedPhoto'))
+    setIsUserFetched?.(true)
+  }, [userResp, fromDB, t, setIsUserFetched, stepData, stepLabel])
+
   return (
     <Box sx={style.root}>
-      <Grid container>
+      <Grid container spacing={4}>
         <Grid
           item
           md={6}
-          order={{ xs: 2, md: 1 }}
+          order={{ xs: 3, md: 1 }}
           sx={style.imgContainer}
           xs={12}
         >
@@ -208,7 +195,7 @@ const AddPhotoStep = ({
             )}
           </Box>
         </Grid>
-        <Grid item md={6} order={{ xs: 1, md: 2 }} sx={style.rightBox} xs={12}>
+        <Grid item md={6} order={{ xs: 1, md: 2 }} xs={12}>
           <Grid>
             <Typography sx={style.description}>
               {t('becomeTutor.photo.description')}
