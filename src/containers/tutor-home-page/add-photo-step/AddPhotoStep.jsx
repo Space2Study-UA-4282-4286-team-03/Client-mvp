@@ -148,20 +148,6 @@ const AddPhotoStep = ({
     }
   }
 
-  useEffect(() => {
-    const preventDefault = (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-
-    window.addEventListener('dragover', preventDefault)
-    window.addEventListener('drop', preventDefault)
-
-    return () => {
-      window.removeEventListener('dragover', preventDefault)
-      window.removeEventListener('drop', preventDefault)
-    }
-  }, [])
   return (
     <Box sx={style.root}>
       <Grid container>
@@ -194,24 +180,6 @@ const AddPhotoStep = ({
               }
             }}
           >
-            {isDragging && (
-              <Typography
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 600,
-                  color: 'primary.main',
-                  backgroundColor: 'rgba(255,255,255,0.8)',
-                  zIndex: 2
-                }}
-              >
-                Drop image here
-              </Typography>
-            )}
-
             {previewPhoto && (
               <IconButton
                 className='remove-btn'
