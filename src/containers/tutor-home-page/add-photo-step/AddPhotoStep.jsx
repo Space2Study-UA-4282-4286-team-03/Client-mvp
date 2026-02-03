@@ -13,7 +13,7 @@ import { useCallback } from 'react'
 
 import { useStepContext } from '~/context/step-context'
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAppSelector } from '~/hooks/use-redux'
 import { userService } from '~/services/user-service'
 import useAxios from '~/hooks/use-axios'
@@ -24,13 +24,15 @@ const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg']
 const AddPhotoStep = ({
   btnsBox,
   stepLabel,
-  isUserFetched,
-  setIsUserFetched
+  setIsUserFetched,
+  isUserFetched
 }) => {
+  const fileInputRef = useRef(null)
   const { stepData, handleStepData } = useStepContext()
   const [previewPhoto, setPreviewPhoto] = useState(null)
   const [fromDB, setFromDB] = useState(true)
   const [fileError, setFileError] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
   const { t } = useTranslation()
   const [buttonLabel, setButtonLabel] = useState(t('becomeTutor.photo.button'))
 
@@ -69,31 +71,56 @@ const AddPhotoStep = ({
     stepLabel,
     userResp,
     isUserFetched,
-    setIsUserFetched,
+    fromDB,
     t,
-    fromDB
+    setIsUserFetched
   ])
+
+  const applyFile = useCallback(
+    (file) => {
+      if (!file) return
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        setFileError(t('becomeTutor.photo.typeError'))
+        event.target.value = null
+        return
+      }
+      if (file.size > MAX_FILE_SIZE_MB) {
+        setFileError(t('becomeTutor.photo.sizeError'))
+        event.target.value = null
+        return
+      }
+      setFileError('')
+      setFromDB(false)
+      const previewUrl = URL.createObjectURL(file)
+      setPreviewPhoto(previewUrl)
+      setButtonLabel(file.name)
+      handleStepData(stepLabel, [file], {})
+    },
+    [handleStepData, stepLabel, t]
+  )
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0]
-    if (!file) return
-    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-      setFileError(t('becomeTutor.photo.typeError'))
-      event.target.value = null
-      return
-    }
-    if (file.size > MAX_FILE_SIZE_MB) {
-      setFileError(t('becomeTutor.photo.sizeError'))
-      event.target.value = null
-      return
-    }
-    setFileError('')
-    const previewUrl = URL.createObjectURL(file)
-    setPreviewPhoto(previewUrl)
-    setButtonLabel(file.name)
-    handleStepData(stepLabel, [file], {})
-    setFromDB(false)
+    applyFile(file)
   }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (event) => {
+    event.preventDefault()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (event) => {
+    event.preventDefault()
+    setIsDragging(false)
+    const file = event.dataTransfer.files[0]
+    applyFile(file)
+  }
+
   useEffect(() => {
     return () => {
       if (previewPhoto) {
@@ -101,20 +128,40 @@ const AddPhotoStep = ({
       }
     }
   }, [previewPhoto])
+
   const handleRemovePhoto = (event) => {
     event.stopPropagation()
     event.preventDefault()
-    if (previewPhoto) {
+
+    if (previewPhoto?.startsWith('blob:')) {
       URL.revokeObjectURL(previewPhoto)
     }
+
     setPreviewPhoto(null)
     setFromDB(false)
     setButtonLabel(t('becomeTutor.photo.button'))
     setFileError('')
     handleStepData(stepLabel, [], {})
-    const input = document.getElementById('add-photo-input')
-    if (input) input.value = null
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null
+    }
   }
+
+  useEffect(() => {
+    const preventDefault = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    window.addEventListener('dragover', preventDefault)
+    window.addEventListener('drop', preventDefault)
+
+    return () => {
+      window.removeEventListener('dragover', preventDefault)
+      window.removeEventListener('drop', preventDefault)
+    }
+  }, [])
   return (
     <Box sx={style.root}>
       <Grid container>
@@ -125,7 +172,67 @@ const AddPhotoStep = ({
           sx={style.imgContainer}
           xs={12}
         >
-          <Box sx={style.uploadBox}>
+          <Box
+            onClick={() => {
+              if (!previewPhoto) {
+                fileInputRef.current?.click()
+              }
+            }}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            sx={{
+              ...style.uploadBox,
+              border: isDragging
+                ? '2px dashed #1976d2'
+                : '2px dashed transparent',
+              backgroundColor: isDragging ? 'action.hover' : 'transparent',
+              cursor: 'pointer',
+              position: 'relative',
+              '&:hover .remove-btn': {
+                opacity: 1
+              }
+            }}
+          >
+            {isDragging && (
+              <Typography
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 600,
+                  color: 'primary.main',
+                  backgroundColor: 'rgba(255,255,255,0.8)',
+                  zIndex: 2
+                }}
+              >
+                Drop image here
+              </Typography>
+            )}
+
+            {previewPhoto && (
+              <IconButton
+                className='remove-btn'
+                onClick={handleRemovePhoto}
+                sx={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  color: '#fff',
+                  opacity: 0,
+                  transition: 'opacity 0.2s',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.8)'
+                  }
+                }}
+              >
+                <CloseIcon fontSize='small' />
+              </IconButton>
+            )}
+
             {previewPhoto ? (
               <img alt='Photo Preview' src={previewPhoto} style={style.img} />
             ) : (
@@ -149,6 +256,7 @@ const AddPhotoStep = ({
                 <VisuallyHiddenInput
                   id='add-photo-input'
                   onChange={handleFileUpload}
+                  ref={fileInputRef}
                   type='file'
                 />{' '}
                 {previewPhoto && (
