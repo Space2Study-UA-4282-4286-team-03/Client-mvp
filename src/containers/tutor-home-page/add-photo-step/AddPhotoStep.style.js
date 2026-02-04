@@ -5,13 +5,15 @@ export const style = {
     display: 'flex',
     justifyContent: 'space-between',
     gap: '40px',
-    height: { sm: '485px' },
+    height: { sm: '480px' },
     paddingBottom: { sm: '210px', md: '0px' },
     ...fadeAnimation
   },
   img: {
-    width: '100%',
-    height: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    width: 'auto',
+    height: 'auto',
     borderRadius: '20px',
     mt: { xs: '20px', md: '0px' },
     objectFit: 'contain',
@@ -60,16 +62,6 @@ export const style = {
       textAlign: 'center',
       color: 'black',
       backgroundColor: 'common.white'
-    },
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      border: '1px solid',
-      borderColor: 'primary.200',
-      borderRadius: '5px',
-      maxWidth: '270px',
-      overflow: 'auto'
     }
   }
 }

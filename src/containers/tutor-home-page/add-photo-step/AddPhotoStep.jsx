@@ -196,38 +196,39 @@ const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
           </Box>
         </Grid>
         <Grid item md={6} order={{ xs: 1, md: 2 }} xs={12}>
-          <Grid>
-            <Typography sx={style.description}>
-              {t('becomeTutor.photo.description')}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                component='label'
-                startIcon={<CloudUploadIcon />}
-                sx={style.fileUploader.button}
-                variant='contained'
-              >
-                <Typography>{buttonLabel}</Typography>
-                <VisuallyHiddenInput
-                  id='add-photo-input'
-                  onChange={handleFileUpload}
-                  ref={fileInputRef}
-                  type='file'
-                />{' '}
-                {previewPhoto && (
-                  <IconButton
-                    aria-label={t('becomeTutor.photo.remove')}
-                    onClick={handleRemovePhoto}
-                    size='small'
-                    sx={{ ml: 1 }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                )}
-              </Button>
-            </Box>
-            {fileError && <Typography color='error'>{fileError}</Typography>}
-          </Grid>
+          <Typography sx={style.description}>
+            {t('becomeTutor.photo.description')}
+          </Typography>
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              component='label'
+              startIcon={<CloudUploadIcon />}
+              sx={style.fileUploader.button}
+              variant='contained'
+            >
+              <Typography>{buttonLabel}</Typography>
+              <VisuallyHiddenInput
+                id='add-photo-input'
+                onChange={handleFileUpload}
+                ref={fileInputRef}
+                type='file'
+              />{' '}
+              {previewPhoto && (
+                <IconButton
+                  aria-label={t('becomeTutor.photo.remove')}
+                  onClick={handleRemovePhoto}
+                  size='small'
+                  sx={{ ml: 1 }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </Button>
+          </Box>
+          {fileError && <Typography color='error'>{fileError}</Typography>}
+        </Grid>
+        <Grid item order={{ xs: 4, md: 4 }} sx={{ pb: 4, mt: -6 }} xs={12}>
           {btnsBox}
         </Grid>
       </Grid>
