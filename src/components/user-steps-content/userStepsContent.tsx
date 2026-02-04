@@ -44,7 +44,7 @@ const UserStepsContent: FC<UserStepsWrapperProps> = ({ userRole }) => {
       isUserFetched={isUserFetched}
       key='4'
       setIsUserFetched={setIsUserFetched}
-      stepLabel='photoLabel'
+      stepLabel='photo'
     />
   ]
 

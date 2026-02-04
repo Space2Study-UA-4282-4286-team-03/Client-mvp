@@ -61,16 +61,16 @@ const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
   }, [stepData, stepLabel])
 
   const applyFile = useCallback(
-    (file) => {
+    (file, inputRef) => {
       if (!file) return
       if (!ALLOWED_FILE_TYPES.includes(file.type)) {
         setFileError(t('becomeTutor.photo.typeError'))
-        event.target.value = null
+        if (inputRef?.current) inputRef.current.value = null
         return
       }
       if (file.size > MAX_FILE_SIZE_MB) {
-        setFileError(t('becomeTutor.photo.sizeError'))
-        event.target.value = null
+        setFileError(t('becomeTutor.photo.fileSizeError'))
+        if (inputRef?.current) inputRef.current.value = null
         return
       }
       setFileError('')
@@ -80,12 +80,12 @@ const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
       setButtonLabel(file.name)
       handleStepData(stepLabel, [file], {})
     },
-    [handleStepData, stepLabel, t]
+    [handleStepData, stepLabel, t, fileInputRef]
   )
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0]
-    applyFile(file)
+    applyFile(file, fileInputRef)
   }
 
   const handleDragOver = (event) => {
@@ -102,7 +102,7 @@ const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
     event.preventDefault()
     setIsDragging(false)
     const file = event.dataTransfer.files[0]
-    applyFile(file)
+    applyFile(file, fileInputRef)
   }
 
   const handleRemovePhoto = (event) => {
@@ -131,7 +131,7 @@ const AddPhotoStep = ({ btnsBox, stepLabel, setIsUserFetched }) => {
 
     const savedPhoto = userResp.photo
     setPreviewPhoto(savedPhoto)
-    setButtonLabel(t('savedPhoto'))
+    setButtonLabel(t('becomeTutor.photo.button'))
     setIsUserFetched?.(true)
   }, [userResp, fromDB, t, setIsUserFetched, stepData, stepLabel])
 
