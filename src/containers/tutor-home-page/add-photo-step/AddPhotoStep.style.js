@@ -5,64 +5,63 @@ export const style = {
     display: 'flex',
     justifyContent: 'space-between',
     gap: '40px',
-    height: { sm: '485px' },
+    height: { sm: '480px' },
     paddingBottom: { sm: '210px', md: '0px' },
     ...fadeAnimation
   },
   img: {
-    width: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    width: 'auto',
+    height: 'auto',
     borderRadius: '20px',
-    mt: { xs: '20px', md: '0px' }
+    mt: { xs: '20px', md: '0px' },
+    objectFit: 'contain',
+    display: 'block'
   },
   imgContainer: {
     display: 'flex',
     alignItems: 'center',
-    maxWidth: '440px',
+    justifyContent: 'center',
     width: '100%',
-    flex: 1,
-    pb: { xs: '16px', sm: '26px', md: '52px' }
+    maxWidth: { xs: '100%', md: '440px' },
+    pb: { xs: '16px', sm: '26px', md: '52px' },
+    flex: 1
   },
   uploadBox: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    maxWidth: '440px',
     width: '100%',
+    maxWidth: '440px',
     aspectRatio: '1',
     border: '2px dashed',
     borderColor: 'primary.200',
     borderRadius: '20px',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
     mt: { xs: '20px', md: '0px' }
   },
   activeDrag: {
     border: '2px primary',
     borderColor: 'primary.900'
   },
-  rigthBox: {
+  rightBox: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    maxWidth: '432px',
-    m: { md: 0, xs: '0 auto' },
-    pt: 0,
-    pb: { xs: '30px', sm: '0' }
+    justifyContent: 'flex-start',
+    maxWidth: { xs: '100%', md: '432px' },
+    m: { xs: '0 auto', md: 0 },
+    pt: { xs: 2, md: 0 }
   },
   description: {
     mb: '20px'
   },
   fileUploader: {
     button: {
-      textAlign: 'center'
-    },
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      border: '1px solid',
-      borderColor: 'primary.200',
-      borderRadius: '5px',
-      maxWidth: '270px',
-      overflow: 'auto'
+      textAlign: 'center',
+      color: 'black',
+      backgroundColor: 'common.white'
     }
   }
 }
