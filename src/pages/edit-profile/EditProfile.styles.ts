@@ -22,14 +22,14 @@ export const styles = {
     flexDirection: { xs: 'column', md: 'row' }
   },
   sidebar: {
-    display: { xs: 'none', md: 'flex' }, 
+    display: { xs: 'none', md: 'flex' },
     flexDirection: 'column',
     gap: '8px',
     minWidth: { md: '280px', lg: '400px' },
     padding: '12px'
   },
   mobileMenuButton: {
-    display: { xs: 'flex', md: 'none' } 
+    display: { xs: 'flex', md: 'none' }
   },
   divider: {
     height: '1px',
@@ -38,7 +38,7 @@ export const styles = {
   },
   content: {
     flex: 1,
-    padding: { xs: '16px', sm: '22px' },
+    padding: { xs: '16px', sm: '22px' }
   },
   formContent: {
     flex: 1,
@@ -51,7 +51,7 @@ export const styles = {
   bar: {
     display: 'flex',
     gap: '6px',
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
     mt: '12px'
   },
   photoRow: {
@@ -73,7 +73,7 @@ export const styles = {
     flexDirection: { xs: 'column', sm: 'row' }
   },
   drawer: {
-    width: 260, 
+    width: 260,
     padding: '12px'
   },
   photoHint: {
@@ -83,8 +83,8 @@ export const styles = {
   professionalSummaryField: {
     mt: '10px',
     '& [data-text-length]': {
-    left: 0,
-    right: 'auto'
+      left: 0,
+      right: 'auto'
     }
   }
 }

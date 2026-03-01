@@ -32,6 +32,9 @@ export const URLs = {
     get: '/subjects',
     getNames: '/subjects/names'
   },
+  offers: {
+    get: '/offers'
+  },
   resources: {
     questions: {
       get: '/questions',
