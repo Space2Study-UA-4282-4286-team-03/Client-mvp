@@ -79,8 +79,11 @@ const FindOffers = () => {
     value: CategoryNameInterface | null
   ) => {
     const newId = value?._id ?? ''
-    searchParams.set('categoryId', newId)
-    setSearchParams(searchParams)
+    const nextParams = new URLSearchParams(searchParams)
+    if (newId) nextParams.set('categoryId', newId)
+    else nextParams.delete('categoryId')
+    nextParams.delete('subjectId')
+    setSearchParams(nextParams)
     setCategoryId(newId)
     setCategoryName(value?.name ?? '')
     setSubjectId('')
@@ -111,8 +114,10 @@ const FindOffers = () => {
     value: SubjectNameInterface | null
   ) => {
     const newId = value?._id ?? ''
-    searchParams.set('subjectId', newId)
-    setSearchParams(searchParams)
+    const nextParams = new URLSearchParams(searchParams)
+    if (newId) nextParams.set('subjectId', newId)
+    else nextParams.delete('subjectId')
+    setSearchParams(nextParams)
     setSubjectId(newId)
     setSubjectName(value?.name ?? '')
     resetData()

@@ -8,6 +8,8 @@ export const offerService = {
     title?: string
     categoryId?: string
     subjectId?: string
+    limit?: number
+    skip?: number
   }): Promise<AxiosResponse<ItemsWithCount<Offer>>> => {
     return axiosClient.get<ItemsWithCount<Offer>>(URLs.offers.get, { params })
   }
