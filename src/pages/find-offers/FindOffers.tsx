@@ -129,7 +129,7 @@ const FindOffers = () => {
   }
 
   const fetchSubjects = useCallback(
-    () => subjectService.getSubjectsNames(categoryId),
+    () => subjectService.getSubjectsNames(categoryId || null),
     [categoryId]
   )
 
@@ -162,20 +162,18 @@ const FindOffers = () => {
         />
       </Box>
       <AppToolbar sx={styles.searchToolbar}>
-        {!breakpoints.isMobile && (
-          <>
-            {autoCompleteCategories}
-            {autoCompleteSubjects}
-            <SearchAutocomplete
-              loading={offersLoading}
-              onSearchChange={resetData}
-              options={offers.map((o) => o.title)}
-              search={match}
-              setSearch={setMatch}
-              textFieldProps={{ label: t('findOffers.searchToolbar.label') }}
-            />
-          </>
-        )}
+        <>
+          {autoCompleteCategories}
+          {autoCompleteSubjects}
+          <SearchAutocomplete
+            loading={offersLoading}
+            onSearchChange={resetData}
+            options={offers.map((o) => o.title)}
+            search={match}
+            setSearch={setMatch}
+            textFieldProps={{ label: t('findOffers.searchToolbar.label') }}
+          />
+        </>
       </AppToolbar>
     </PageWrapper>
   )
